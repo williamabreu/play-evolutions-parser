@@ -7,6 +7,8 @@ from sys import argv
 from time import asctime
 from enum import Enum, auto
 
+import re
+
 
 class Token(Enum):
     SHARP = '#'
@@ -22,8 +24,8 @@ class State(Enum):
 
 
 def parse(filename: str) -> tuple:
-    ups = []
-    downs = []
+    ups = [f'\n\n-- {filename}\n']
+    downs = [f'\n\n-- {filename}\n']
     current_state = State.UNKNOWN
     with open(filename) as fp:
         for line in fp:
@@ -35,10 +37,11 @@ def parse(filename: str) -> tuple:
                     current_state = State.DOWNS
                 else:
                     return None
-            if current_state == State.UPS:
-                ups.append(line)
-            elif current_state == State.DOWNS:
-                downs.append(line)
+            else:
+                if current_state == State.UPS:
+                    ups.append(line)
+                elif current_state == State.DOWNS:
+                    downs.append(line)
     return (
         ''.join(ups),
         ''.join(downs),
@@ -54,7 +57,7 @@ def main(dirname: str) -> None:
     ups = []
     downs = []
 
-    for file in listdir(dirname):
+    for file in sorted(listdir(dirname), key=lambda x: int(re.findall(r'\d+.sql', x)[0].replace('.sql', ''))):
         up, down = parse(path.join(dirname, file))
         ups.append(up)
         downs.append(down)
