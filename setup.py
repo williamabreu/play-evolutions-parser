@@ -10,10 +10,10 @@
 import setuptools
 
 # Change the 'project_name' here to the correct one.
-from project_name import __version__
+from play_evolutions import __version__
 
 # Set the project name here.
-PROJECT_NAME = 'project_name'
+PROJECT_NAME = 'play_evolutions'
 
 setuptools.setup(
     name=PROJECT_NAME,
